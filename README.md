@@ -181,7 +181,7 @@ Integrates all modules into a complete sequence detection system.
 
 
 # Example Sequences
-
+```
 Example patterns that can be monitored:
 
 Sequence 1 : 1011
@@ -189,7 +189,7 @@ Sequence 2 : 1101
 Sequence 3 : 0110
 Sequence 4 : 1110
 The design can be extended to support additional sequences by modifying the detector logic.
-
+```
 
 # Manual Priority Override
 
@@ -218,7 +218,7 @@ gtkwave wave.vcd
 
 
 # Signals Used
-
+```
   Signal              Description                       
 
   clk               System clock                      
@@ -229,7 +229,7 @@ gtkwave wave.vcd
  priority_select    User-selected priority            
  selected_sequence  Final chosen sequence             
  seq_count          Detection count                   
-
+```
 
 # Verification
 
@@ -281,4 +281,4 @@ Simulation results confirm correct functionality of all modules and demonstrate 
 
 **Bhavitha Nagavarapu**
 
-Verilog HDL | Digital Design | FPGA Development
+Verilog HDL | Digital Design 
