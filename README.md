@@ -73,7 +73,7 @@ This project was developed and verified using **Icarus Verilog**, **GTKWave**, a
 
 
 # Project Structure
-
+```
 sequence_detector/
 │
 ├── src/
@@ -94,6 +94,7 @@ sequence_detector/
 │
 ├── README.md
 └── .gitignore
+```
 
 
 # Module Description
