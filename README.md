@@ -1,179 +1,283 @@
-Overview
+# Multi-Sequence Detector with Priority Override using Verilog HDL
 
-This project implements a binary sequence detector using a Shift Register approach in Verilog HDL. The design continuously monitors a serial input stream and asserts an output signal when the target binary sequence is detected.
+## Overview
 
-Rather than using an FSM (Finite State Machine), this implementation leverages a shift register to buffer incoming bits and a comparator to check for a match — resulting in a clean, hardware-efficient design.
+This project implements a configurable **Multi-Sequence Detector** using Verilog HDL. The system continuously monitors a serial input stream and detects multiple predefined binary sequences using a shift-register-based architecture.
 
-The design is functionally verified using a custom testbench, simulated with Icarus Verilog, and analyzed via waveforms in GTKWave.
+The design supports:
 
+* Multiple sequence detection
+* Overlapping sequence detection
+* Conflict detection
+* Manual priority override
+* Detection counters
+* FPGA-ready modular architecture
 
+This project was developed and verified using **Icarus Verilog**, **GTKWave**, and **Visual Studio Code**.
 
-Features
 
+# Features
 
+✅ Multi-sequence detection
 
-Shift register-based serial sequence detection
+✅ Shift-register-based pattern matching
 
-Comparator logic for real-time pattern matching
+✅ Overlapping sequence support
 
-Modular Verilog RTL design (each block in a separate .v file)
+✅ Conflict detection
 
-Comprehensive testbench covering normal, edge, and overlap cases
+✅ Manual priority selection
 
-Waveform output (.vcd) for visual debugging in GTKWave
+✅ Detection counters
 
+✅ Modular Verilog design
 
+✅ Easy FPGA integration
 
 
-
-Design Methodology
-
-The sequence detector is built around a shift register + comparator architecture:
-
-Serial Input ──► \[ Shift Register ] ──► \[ Comparator ] ──► Output (match detected)
-
-&#x20;                  (N-bit buffer)          (target == register?)
-
-How It Works
-
-
-
-Shift Register — On every clock edge, the incoming serial bit is shifted into an N-bit register, pushing out the oldest bit.
-
-Comparator — The current contents of the shift register are compared against the target sequence in parallel.
-
-Output — When the shift register content matches the target, the output is asserted HIGH for that clock cycle.
-
-Overlap Handling — Since the shift register always holds the last N bits, overlapping sequences are detected naturally without any reset logic.
-
-
-
-This approach avoids the complexity of state encoding and is especially efficient for fixed-length sequence detection.
-
-
-
-Project Structure
-
-sequence\_detector/
-
-│
-
-├── src/                        # RTL design files
-    
-│   ├── top\_module.v            # Top-level integration
-
-│   ├── shift\_register.v        # N-bit serial shift register
-
-│   ├── comparator.v            # Bitwise comparator for match detection
-
-│   ├── counter\_module.v        # Optional counter for timing/tracking
-
-│   ├── uart\_interface.v        # UART interface (for serial input)
-
-│   └── display\_controller.v   # Display output controller
-
-│
-
-├── tb/                         # Testbench files
-
-│   └── top\_module\_tb.v         # Functional verification testbench
-
-│
-
-├── docs/                       # Documentation
-
-├── output/
-
-│   └── wave.vcd                # Simulation waveform dump
-
-├── sim                         # Compiled simulation binary
-
-├── .gitignore
-
-└── README.md
-
-
-
- Simulation Setup
-
-Make sure Icarus Verilog and GTKWave are installed before proceeding.
-
-🔹 Step 1 — Compile
-
-bashiverilog -o sim tb/top\_module\_tb.v src/\*.v
-
-🔹 Step 2 — Run Simulation
-
-bashvvp sim
-
-This generates the wave.vcd waveform file in the project root.
-
-🔹 Step 3 — View Waveform
-
-bashgtkwave wave.vcd
-
-Open the relevant signals (clk, serial\_in, shift\_reg, match\_out) in GTKWave to inspect behavior.
-
-Block Diagram
+## Block Diagram
 
 ![Block Diagram](docs/BLOCK_DIAGRAM_SD.jpeg)
 
- FSM Flowchart
+## FSM Flowchart
 
 ![FSM Flowchart](docs/FSM_SD.jpeg)
 
-Simulation Waveform
+## Simulation Waveform
 
 ![Waveform](docs/WAVEFORM_SD.png)
 
 
-
- Expected Output
-
-SignalBehaviorserial\_inSerial bits applied one per clock cycleshift\_reg\[N-1:0]Updates every cycle; holds the last N input bitsmatch\_outGoes HIGH for one cycle when shift register matches target sequence
+# Architecture
 
 
-
-Note: Overlapping occurrences of the sequence are also detected since no reset is applied after a match.
-
-
-
-
-
- Tools Used
-
-ToolPurposeVerilog HDLRTL design and testbenchIcarus VerilogCompilation and simulationGTKWaveWaveform visualization and debugging
-
-
-
- Learning Outcomes
-
-Shift register design and serial data handling in Verilog
-
-Parallel comparator logic for pattern matching
-
-Modular RTL design practices
-
-Testbench creation with edge case coverage
-
-Waveform analysis and signal debugging in GTKWave
+                    Serial Input
+                          │
+                          ▼
+                  Shift Register
+                          │
+                          ▼
+                  Multi Detector
+                          │
+                          ▼
+                 Conflict Detector
+                          │
+                          ▼
+                 Priority Override
+                          │
+                          ▼
+                   Counter Module
+                          │
+                          ▼
+                    Final Output
 
 
+# Project Structure
 
- Future Improvements
+sequence_detector/
+│
+├── src/
+│   ├── shift_register.v
+│   ├── multi_detector.v
+│   ├── conflict_detector.v
+│   ├── priority_override.v
+│   ├── counter_module.v
+│   └── top_module.v
+│
+├── tb/
+│   └── top_module_tb.v
+│
+├── docs/
+│   ├── BLOCK_DIAGRAM_SD.jpeg
+│   ├── FSM_SD.jpeg
+│   └── WAVEFORM_SD.png
+│
+├── README.md
+└── .gitignore
 
 
+# Module Description
 
-&#x20;FPGA implementation and hardware testing (Xilinx / Intel)
+## 1. Shift Register
 
-&#x20;Integrate UART input for real-time serial stream detection
+The shift register stores incoming serial bits and provides a sliding window for sequence comparison.
+
+### Inputs
+
+* clk
+* reset
+* data_in
+
+### Output
+
+* shift_reg
+
+## 2. Multi Detector
+
+Compares shift-register contents against predefined binary sequences.
+
+### Functions
+
+* Parallel sequence matching
+* Multiple sequence detection
+* Match vector generation
+
+## 3. Conflict Detector
+
+Identifies situations where multiple sequences are detected simultaneously.
+
+### Output
+
+* conflict
 
 
+## 4. Priority Override
+
+Allows the user to manually select which sequence should receive priority during conflicts.
+
+### Inputs
+
+* match_vector
+* priority_select
+
+### Output
+
+* selected_sequence
 
 
- Author
+## 5. Counter Module
 
-Bhavitha
+Counts the number of successful detections for each sequence.
 
-Digital Design | Verilog HDL | FPGA Enthusiast
+### Outputs
 
+* seq1_count
+* seq2_count
+* seq3_count
+* seq4_count
+
+
+## 6. Top Module
+
+Integrates all modules into a complete sequence detection system.
+
+### Responsibilities
+
+* Data flow management
+* Conflict handling
+* Output generation
+
+
+# Detection Flow
+
+1. Serial data enters the shift register.
+2. Stored bits are compared with predefined sequences.
+3. Matching sequences are identified.
+4. Conflict detector checks for simultaneous matches.
+5. Priority override resolves conflicts.
+6. Detection counters are updated.
+7. Final output is generated.
+
+
+# Example Sequences
+
+Example patterns that can be monitored:
+
+Sequence 1 : 1011
+Sequence 2 : 1101
+Sequence 3 : 0110
+Sequence 4 : 1110
+The design can be extended to support additional sequences by modifying the detector logic.
+
+
+# Manual Priority Override
+
+When two or more sequences are detected simultaneously:
+
+1. Conflict signal is asserted.
+2. User selects priority through `priority_select`.
+3. Selected sequence is forwarded as output.
+4. Corresponding counter is updated.
+
+This ensures deterministic behavior during multiple matches.
+
+# Simulation Procedure
+
+## Compile
+
+iverilog -o sim tb/top_module_tb.v src/*.v
+
+## Run Simulation
+
+vvp sim
+
+## Generate Waveform
+
+gtkwave wave.vcd
+
+
+# Signals Used
+
+  Signal              Description                       
+
+  clk               System clock                      
+ reset              System reset                      
+ data_in            Serial input stream               
+ match_vector       Indicates matched sequences       
+ conflict           Multiple sequence match indicator 
+ priority_select    User-selected priority            
+ selected_sequence  Final chosen sequence             
+ seq_count          Detection count                   
+
+
+# Verification
+
+The testbench verifies:
+
+* Normal sequence detection
+* Multiple sequence detection
+* Overlapping sequence detection
+* Conflict generation
+* Priority override operation
+* Counter functionality
+
+# Tools Used
+
+* Verilog HDL
+* Icarus Verilog
+* GTKWave
+* Visual Studio Code
+* Git
+* GitHub
+
+
+# Applications
+
+* Communication protocol monitoring
+* Pattern recognition systems
+* FPGA-based controllers
+* Embedded hardware verification
+* Data stream analysis
+* Digital signal processing systems
+
+
+# Future Enhancements
+
+* OLED/LCD display support
+* Runtime configurable sequences
+* FPGA deployment on Xilinx/AMD boards
+* Sequence storage in memory blocks
+
+
+# Results
+
+The system successfully detects multiple binary sequences from a serial input stream while supporting overlap detection, conflict resolution, and manual priority control.
+
+Simulation results confirm correct functionality of all modules and demonstrate reliable operation under different test scenarios.
+
+
+# Author
+
+**Bhavitha Nagavarapu**
+
+Verilog HDL | Digital Design | FPGA Development
